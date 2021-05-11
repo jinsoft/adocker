@@ -1,0 +1,17 @@
+
+### Paths #################################################
+
+# Point to the path of your applications code on your host
+APP_CODE_PATH_HOST=../wwwroot/
+
+# Choose storage path on your machine. For all storage systems
+DATA_PATH_HOST=./docker_data
+
+### Drivers ################################################
+
+# All Networks driver
+NETWORKS_DRIVER=bridge
+
+### REDIS #################################################
+
+REDIS_PORT=6379

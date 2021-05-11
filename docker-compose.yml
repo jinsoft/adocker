@@ -1,0 +1,32 @@
+version: '3.5'
+
+networks:
+  backend:
+    driver: ${NETWORKS_DRIVER}
+services:
+  redis:
+    build: ./redis
+    volumes:
+      - ${DATA_PATH_HOST}/redis:/data
+    ports:
+      - "${REDIS_PORT}:6379"
+    networks:
+      - backend
+  redis-slave-1:
+    build: ./redis
+    volumes:
+      - ${DATA_PATH_HOST}/redis-slave-1:/data
+    ports:
+      - "63791:6379"
+    networks:
+      - backend
+    command: redis-server --slaveof redis 6379
+  redis-slave-2:
+    build: ./redis
+    volumes:
+      - ${DATA_PATH_HOST}/redis-slave-2:/data
+    ports:
+      - "63792:6379"
+    networks:
+      - backend
+    command: redis-server --slaveof redis 6379
