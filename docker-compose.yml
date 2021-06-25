@@ -3,4 +3,26 @@ version: '3.5'
 networks:
   backend:
     driver: ${NETWORKS_DRIVER}
+    ipam:
+      driver: default
+      config:
+        - subnet: ${SUBNET_MASK}
 services:
+
+  ### MySQL ################################################
+  mysql:
+    build:
+      context: ./mysql
+      args:
+        - MYSQL_VERSION=${MYSQL_VERSION}
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - TZ=${TIMEZONE}
+    volumes:
+      - ${DATA_PATH_HOST}/mysql:/var/lib/mysql:rw
+      - ${MYSQL_LOG_PATH}:/var/log/mysql:rw
+    ports:
+      - "${MYSQL_PORT}:3306"
+    networks:
+      backend:
+        - ipv4_address: ${MYSQL_IPV4}

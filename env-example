@@ -8,10 +8,24 @@ APP_CODE_PATH_HOST=../wwwroot/
 DATA_PATH_HOST=./docker_data
 
 ### Drivers ################################################
-
 # All Networks driver
 NETWORKS_DRIVER=bridge
+
+### 子网掩码 ################################################
+SUBNET_MASK=172.0.0.0/24
+
+### TIMEZONE ##############################################
+TIMEZONE=PRC
 
 ### REDIS #################################################
 
 REDIS_PORT=6379
+
+### MYSQL #################################################
+
+MYSQL_VERSION=5.7
+MYSQL_PORT=3306
+MYSQL_ROOT_PASSWORD=root
+MYSQL_ENTRYPOINT_INITDB=./mysql/docker-entrypoint-initdb.d
+MYSQL_LOG_PATH=./docker_data/mysql/log
+MYSQL_IPV4=172.0.0.8
