@@ -17,6 +17,9 @@ RUN set -xe; \
     docker-php-ext-install zip && \
     php -m | grep -q 'zip'
 
+
+RUN apk add supervisor
+
 #
 #--------------------------------------------------------------------------
 # Optional Software's Installation
