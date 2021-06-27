@@ -14,16 +14,20 @@ volumes:
     driver: ${VOLUMES_DRIVER}
 services:
 
-  ### PHP-FPM ##############################################
-  php-fpm:
+  ### PHP ##############################################
+  php:
     build:
-      context: ./php-fpm
+      context: ./php
       args:
         - PHP_VERSION: ${PHP_VERSION}
       volumes:
-        - ./php-fpm/php${PHP_VERSION}.ini:/usr/local/etc/php/php.ini
+        - ./php/php${PHP_VERSION}.ini:/usr/local/etc/php/php.ini
+        - ./logs/php:/var/log:rw
+        - ./php/supervisor.conf:/etc/supervisor.conf:rw
+        - ./php/supervisor.d:/etc/supervisor.d:rw
       expose:
         - "9000"
+      restart: always
   ### NGINX Server #################################
   nginx:
     build:
@@ -45,7 +49,7 @@ services:
         - "${NGINX_HOST_HTTPS_PORT}:443"
         - "${VARNISH_BACKEND_PORT}:81"
       depends_on:
-        - php-fpm
+        - php
       networks:
         - backend
 
