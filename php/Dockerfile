@@ -2,23 +2,21 @@ ARG PHP_VERSION
 FROM php:${PHP_VERSION}-fpm-alpine
 
 
-RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list && \
-    sed -i 's/security.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list && \
-    sed -i 's/security-cdn.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list
+## Alpine的源文件为：/etc/apk/repositories  默认源地址为：http://dl-cdn.alpinelinux.org/
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+
+#
+#RUN set -xe; \
+#    apt update && \
+#    pecl channel-update pecl.php.net && \
+#    apt-get add apt-utils zlib1g-dev \
+#    libzip-dev zip unzip && \
+#    docker-php-ext-configure zip --with-libzip; \
+#    docker-php-ext-install zip && \
+#    php -m | grep -q 'zip'
 
 
-RUN set -xe; \
-    apt-get update -yqq && \
-    pecl channel-update pecl.php.net && \
-    apt-get install -yqq \
-    apt-utils \
-    libzip-dev zip unzip && \
-    docker-php-ext-configure zip --with-libzip; \
-    docker-php-ext-install zip && \
-    php -m | grep -q 'zip'
-
-
-RUN apk add supervisor
+#RUN apk add supervisor
 
 #
 #--------------------------------------------------------------------------
@@ -40,7 +38,7 @@ ARG INSTALL_SOAP=false
 RUN if [ ${INSTALL_SOAP} = true ]; then \
     # Install the soap extension
     rm /etc/apt/preferences.d/no-debian-php && \
-    apt-get -y install libxml2-dev php-soap && \
+    apt add libxml2-dev php-soap && \
     docker-php-ext-install soap \
 ;fi
 
@@ -53,7 +51,7 @@ ARG INSTALL_XSL=false
 
 RUN if [ ${INSTALL_XSL} = true ]; then \
     # Install the xsl extension
-    apt-get -y install libxslt-dev && \
+    apt add libxslt-dev && \
     docker-php-ext-install xsl \
 ;fi
 
@@ -113,20 +111,6 @@ RUN wget -O /usr/local/bin/composer ${COMPOSER_MIRROR}"composer.phar" && \
     composer config -g repo.packagist composer ${COMPOSER_MIRROR}
 
 COPY ./laravel.ini /usr/local/etc/php/conf.d
-
-# Clean up
-RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    rm /var/log/lastlog /var/log/faillog
-
-# Configure non-root user.
-ARG PUID=1000
-ENV PUID ${PUID}
-ARG PGID=1000
-ENV PGID ${PGID}
-
-RUN groupmod -o -g ${PGID} www-data && \
-    usermod -o -u ${PUID} -g www-data www-data
 
 
 WORKDIR /var/www
