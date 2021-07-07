@@ -4,7 +4,6 @@ LABEL maintainer="Ainiok <job@ainiok.com>"
 
 COPY nginx.conf /etc/nginx/
 
-
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories
 
 RUN apk update \
@@ -32,4 +31,4 @@ COPY logrotate/nginx /etc/logrotate.d/
 RUN echo "upstream php-upstream { server ${PHP_UPSTREAM_CONTAINER}:${PHP_UPSTREAM_PORT}; }" > /etc/nginx/conf.d/upstream.conf \
     && rm /etc/nginx/conf.d/default.conf
 
-EXPOSE 80 81 443
+EXPOSE 80 443

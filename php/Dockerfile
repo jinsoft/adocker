@@ -5,6 +5,7 @@ FROM php:${PHP_VERSION}-fpm-alpine
 ## Alpine的源文件为：/etc/apk/repositories  默认源地址为：http://dl-cdn.alpinelinux.org/
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
+RUN apk add bash
 #
 #RUN set -xe; \
 #    apt update && \
@@ -37,7 +38,6 @@ ARG INSTALL_SOAP=false
 
 RUN if [ ${INSTALL_SOAP} = true ]; then \
     # Install the soap extension
-    rm /etc/apt/preferences.d/no-debian-php && \
     apt add libxml2-dev php-soap && \
     docker-php-ext-install soap \
 ;fi
@@ -111,7 +111,6 @@ RUN wget -O /usr/local/bin/composer ${COMPOSER_MIRROR}"composer.phar" && \
     composer config -g repo.packagist composer ${COMPOSER_MIRROR}
 
 COPY ./laravel.ini /usr/local/etc/php/conf.d
-
 
 WORKDIR /var/www
 
