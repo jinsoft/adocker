@@ -7,14 +7,17 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
 RUN apk add bash
 #
-#RUN set -xe; \
-#    apt update && \
-#    pecl channel-update pecl.php.net && \
-#    apt-get add apt-utils zlib1g-dev \
-#    libzip-dev zip unzip && \
-#    docker-php-ext-configure zip --with-libzip; \
-#    docker-php-ext-install zip && \
-#    php -m | grep -q 'zip'
+RUN set -xe; \
+    apk update && \
+    pecl channel-update pecl.php.net && \
+    apk add libzip-dev zip unzip && \
+    if [ ${PHP_VERSION} = "7.3" ] || [ ${PHP_VERSION} = "7.4" ] || [ $(php -r "echo PHP_MAJOR_VERSION;") = "8" ]; then \
+        docker-php-ext-configure zip; \
+    else \
+        docker-php-ext-configure zip --with-libzip; \
+    fi && \
+    docker-php-ext-install zip && \
+    php -m | grep -q 'zip'
 
 
 #RUN apk add supervisor
@@ -38,7 +41,7 @@ ARG INSTALL_SOAP=false
 
 RUN if [ ${INSTALL_SOAP} = true ]; then \
     # Install the soap extension
-    apt add libxml2-dev php-soap && \
+    apk add libxml2-dev php-soap && \
     docker-php-ext-install soap \
 ;fi
 
@@ -51,7 +54,7 @@ ARG INSTALL_XSL=false
 
 RUN if [ ${INSTALL_XSL} = true ]; then \
     # Install the xsl extension
-    apt add libxslt-dev && \
+    apk add libxslt-dev && \
     docker-php-ext-install xsl \
 ;fi
 
