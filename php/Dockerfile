@@ -110,7 +110,7 @@ USER root
 ARG COMPOSER_MIRROR=https://mirrors.aliyun.com/composer/
 
 RUN wget -O /usr/local/bin/composer ${COMPOSER_MIRROR}"composer.phar" && \
-    chmod +x /usr/local/bin/composer && \
+    chmod +x /usr/local/bin/composer && composer self-update --2.2 && \
     composer config -g repo.packagist composer ${COMPOSER_MIRROR}
 
 COPY ./laravel.ini /usr/local/etc/php/conf.d
