@@ -107,11 +107,14 @@ RUN if [ ${INSTALL_OPCACHE} = true ]; then \
 
 USER root
 
-ARG COMPOSER_MIRROR=https://mirrors.aliyun.com/composer/
+#  如果使用php7.2.5 以下会有一个问题， composer2.3 版本不能降级到2.2 ，使用官方的方式结局
+# ARG COMPOSER_MIRROR=https://mirrors.aliyun.com/composer/
 
-RUN wget -O /usr/local/bin/composer ${COMPOSER_MIRROR}"composer.phar" && \
-    chmod +x /usr/local/bin/composer && composer self-update --2.2 && \
-    composer config -g repo.packagist composer ${COMPOSER_MIRROR}
+# RUN wget -O /usr/local/bin/composer ${COMPOSER_MIRROR}"composer.phar" && \
+#     chmod +x /usr/local/bin/composer && composer self-update --2.2 && \
+#     composer config -g repo.packagist composer ${COMPOSER_MIRROR}
+
+RUN cd /usr/local/bin/ && php -r "copy('https://install.phpcomposer.com/installer', 'composer-setup.php');" &&  php composer-setup.php && php -r "unlink('composer-setup.php');" && mv composer.phar composer
 
 COPY ./laravel.ini /usr/local/etc/php/conf.d
 
