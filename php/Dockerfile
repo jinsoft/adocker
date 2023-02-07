@@ -17,6 +17,7 @@ RUN set -xe; \
         docker-php-ext-configure zip --with-libzip; \
     fi && \
     docker-php-ext-install zip && \
+    docker-php-ext-install pdo pdo_mysql && \
     php -m | grep -q 'zip'
 
 
